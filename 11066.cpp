@@ -2,73 +2,35 @@
 
 using namespace std;
 
-int dp_arr[501][501];
-int sum_arr[501][501];
-int size_arr[501];
-
-int dp(int start, int end, int sum){
-    if(start == end){
-        return sum;
-    }
-    if(dp_arr[start][end] != 0){
-        return dp_arr[start][end];
-    }
-    int cur_min = INT_MAX;
-    int cur_sum = 0;
-    int a, b;
-    int tmp;
-
-    for(int i = start; i <= end; i++){
-        cur_sum += size_arr[i];
-        if(i == start){
-            tmp = sum + dp(i+1, end, sum - cur_sum);
-        }
-        else if(i == end){
-            tmp = dp(start, i-1, sum - cur_sum) + sum;
-        }
-        else{
-            a = dp(start, i, cur_sum);
-            b = dp(i+1, end, sum - cur_sum);
-            tmp = a+b+sum;
-        }
-        if(tmp < cur_min){
-            cur_min = tmp;
-        }
-    }
-    dp_arr[start][end] = cur_min;
-    return cur_min;
-}
+int dp_arr[502][502];
+int sum_arr[502];
 
 int main(){
-    int t, k;
-    int sum;
+    int t, k, n, num, tmp, cur_min;
     scanf(" %d", &t);
     for(int i = 0; i < t; i++){
-        memset(dp_arr, INT_MAX, sizeof(int)*501*501);
-        memset(sum_arr, -1, sizeof(int)*501*501);
-        sum = 0;
         scanf(" %d", &k);
-        for(int j = 0; j < k; j++){
-            scanf(" %d", &size_arr[j]);
-            sum += size_arr[j];
-            sum[0][j] = sum;
+        memset(dp_arr, 0, sizeof(int)*502*502);
+        memset(sum_arr, 0, sizeof(int)*502);
+        for(int j = 1; j <= k; j++){
+            scanf(" %d", &num);
+            sum_arr[j] = sum_arr[j-1] + num;
+            dp_arr[j][j] = 0;
         }
-        for(int p = 0; p <= k-1; p++){
-            for(int q = p; q <= k-1; q++){
-                if(sum[p][q] == -1){
-                    if(p == q){
-
-                    }
-                    else{
-                        sum[p][q] = sum[0][p]
+        for(int p = k - 1; p >=1; p--){
+            for(int r = p + 1; r <= k; r++){
+                cur_min = INT_MAX;
+                for(int q = p; q < r; q++){
+                    tmp = dp_arr[p][q] + dp_arr[q+1][r] + sum_arr[r] - sum_arr[p-1];
+                    if(tmp < cur_min){
+                        cur_min = tmp;
                     }
                 }
-                for(int r = p; r<=q; r++){
-                    dp[p][q] = min(dp[p][r] + dp[r][q] + sum[p][q], dp[p][q]);
-                }
+                dp_arr[p][r] = cur_min;
             }
         }
-        printf("%d\n", dp(0, k-1, sum));
+        printf("%d\n", dp_arr[1][k]);
+
     }
     return 0;
 }
