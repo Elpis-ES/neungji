@@ -2,6 +2,18 @@
 
 using namespace std;
 
+/*
+ * Edge case
+ *
+ * 5
+ * 2 3 4 1 2
+ * 6
+ * 1 2 3 4 5 6
+ * When length is not incldued as a dimension in DP, while LCIS length
+ * is correct, acquired LCIS can be wrong (1 2 3 4 in this case)
+ */
+
+
 int main(){
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
